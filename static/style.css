@@ -386,3 +386,12 @@ details.source-details[open] summary {
 .highlight-pulse {
     animation: pulse-highlight 2s ease-in-out;
 }
+
+/* Masque l'emblème Marianne et la devise officielle pour rester conforme légalement */
+.fr-logo::before {
+    display: none !important;
+}
+.fr-logo::after {
+    display: none !important;
+}
+

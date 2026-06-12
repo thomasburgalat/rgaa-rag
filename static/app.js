@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontIncrease = document.getElementById('font-increase');
     const fontDecrease = document.getElementById('font-decrease');
     const dyslexicToggle = document.getElementById('dyslexic-toggle');
-    
+
     const chatForm = document.getElementById('chat-form');
     const userQuery = document.getElementById('user-query');
     const chatMessages = document.getElementById('chat-messages');
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 themeIcon.className = 'fa-solid fa-moon';
             }
         }
-        
+
         // Ajustement des classes DSFR pour l'icone du bouton theme
         if (themeToggle) {
             if (theme === 'dark') {
@@ -115,14 +115,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const question = userQuery.value.trim();
         if (!question) return;
 
         // Affiche le message de l'utilisateur dans le chat
         appendMessage(question, 'user');
         userQuery.value = '';
-        
+
         // On desactive les inputs pendant la generation
         setLoadingState(true);
 
@@ -140,10 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
             let done = false;
-            
+
             let answerText = "";
             let sourcesData = [];
-            
+
             // On cree la bulle de message systeme vide pour le streaming
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message system-message';
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const body = document.createElement('div');
             body.className = 'message-body';
-            
+
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(body);
             chatMessages.appendChild(msgDiv);
@@ -239,34 +239,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.setAttribute('aria-hidden', 'true');
-        avatar.innerHTML = sender === 'system' 
-            ? '<i class="fa-solid fa-robot"></i>' 
+        avatar.innerHTML = sender === 'system'
+            ? '<i class="fa-solid fa-robot"></i>'
             : '<i class="fa-solid fa-user"></i>';
 
         const body = document.createElement('div');
         body.className = 'message-body';
-        
+
         if (sender === 'system') {
             body.innerHTML = parseMarkdown(text);
-            
+
             // Rendu des sources sous forme d'accordeons DSFR
             if (sources && sources.length > 0) {
                 const sourcesSection = document.createElement('div');
                 sourcesSection.className = 'message-sources-section fr-mt-3v';
-                
+
                 const heading = document.createElement('p');
                 heading.className = 'fr-text--lead fr-text--bold fr-mb-1v';
                 heading.innerHTML = '<i class="fr-icon-book-mark-line fr-mr-1v" aria-hidden="true"></i>Critères et tests RGAA associés :';
                 sourcesSection.appendChild(heading);
-                
+
                 const accordionsGroup = document.createElement('div');
                 accordionsGroup.className = 'sources-accordions';
-                
+
                 sources.forEach((src) => {
                     const details = document.createElement('details');
                     details.className = 'source-details';
                     details.id = `details-${src.id}`;
-                    
+
                     const meta = src.metadata;
                     let displayTitle = '';
                     let badgeText = meta.type === 'critere' ? 'Critère' : 'Glossaire';
@@ -279,29 +279,29 @@ document.addEventListener('DOMContentLoaded', () => {
                         displayTitle = `Glossaire — ${meta.terme}`;
                         subtitle = `Définition`;
                     }
-                    
+
                     const summary = document.createElement('summary');
                     summary.innerHTML = `
                         <span class="fr-badge fr-badge--info fr-mr-1v">${badgeText}</span>
                         <strong>${displayTitle}</strong>
                         <span class="fr-text--xs fr-ml-1v" style="color: var(--text-mention-grey);">${subtitle}</span>
                     `;
-                    
+
                     const contentDiv = document.createElement('div');
                     contentDiv.className = 'details-content fr-p-2v';
                     contentDiv.innerHTML = `
                         <p class="fr-text--sm fr-mb-0" style="white-space: pre-wrap;">${escapeHTML(src.text_snippet)}</p>
                     `;
-                    
+
                     details.appendChild(summary);
                     details.appendChild(contentDiv);
                     accordionsGroup.appendChild(details);
                 });
-                
+
                 sourcesSection.appendChild(accordionsGroup);
                 body.appendChild(sourcesSection);
             }
-            
+
             // Clic sur les badges de criteres pour ouvrir l'accordeon correspondant
             body.querySelectorAll('.critere-badge').forEach(badge => {
                 badge.addEventListener('click', () => {
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msgDiv.appendChild(avatar);
         msgDiv.appendChild(body);
         chatMessages.appendChild(msgDiv);
-        
+
         // Scroll automatique vers le bas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Parser markdown fait maison
     function parseMarkdown(md) {
         let html = md;
-        
+
         // On gere les blocs de code
         const codeBlocks = [];
         html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-        
+
         let iconClass = 'fa-info-circle';
         if (type === 'success') iconClass = 'fa-check-circle';
         if (type === 'error') iconClass = 'fa-exclamation-circle';
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         toastContainer.appendChild(toast);
-        
+
         // Effet de fadeOut apres 3s
         setTimeout(() => {
             toast.style.animation = 'fadeOut 0.3s forwards';
