@@ -1,0 +1,388 @@
+/* ==========================================================================
+   DSFR INTEGRATION LAYER (STYLE.CSS)
+   Permet d'harmoniser notre interface de chat personnalisée avec les tokens DSFR.
+   ========================================================================== */
+
+/* Variables spécifiques de secours ou d'ajustement */
+:root {
+    --base-font-size: 16px;
+    --line-height: 1.5;
+    --letter-spacing: normal;
+    --word-spacing: normal;
+}
+
+/* Police spécifique pour les dyslexiques */
+.dyslexic-mode, 
+.dyslexic-mode * {
+    font-family: system-ui, -apple-system, sans-serif !important;
+    line-height: 1.7 !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+}
+
+/* Ajustements généraux */
+html {
+    font-size: var(--base-font-size) !important;
+}
+
+body {
+    background-color: var(--background-default-grey);
+    color: var(--text-default-grey);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    word-spacing: var(--word-spacing);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Visibilité renforcée du Focus conforme RGAA */
+*:focus-visible {
+    outline: 3px double var(--border-action-high-blue-france) !important;
+    outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   CONTROLES D'ACCESSIBILITE DANS LE HEADER
+   ========================================================================== */
+
+.fr-header__tools-links .fr-btns-group {
+    align-items: center;
+}
+
+.fr-header__tools-links .fr-btn {
+    border-radius: 0;
+}
+
+/* ==========================================================================
+   INTERFACE DE CHAT (PANNEAU GAUCHE)
+   ========================================================================== */
+
+.chat-container {
+    background-color: var(--background-alt-grey);
+    border: 1px solid var(--border-default-grey);
+    display: flex;
+    flex-direction: column;
+    height: 650px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Zone des messages */
+.chat-messages {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background-color: var(--background-default-grey);
+}
+
+.message {
+    display: flex;
+    gap: 1rem;
+    animation: slideUp 0.2s ease-out forwards;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    border: 1px solid var(--border-default-grey);
+}
+
+.system-message .message-avatar {
+    background-color: var(--background-action-high-blue-france);
+    color: var(--text-inverted-blue-france);
+    border-color: var(--background-action-high-blue-france);
+}
+
+.user-message .message-avatar {
+    background-color: var(--background-alt-grey);
+    color: var(--text-default-grey);
+}
+
+.message-body {
+    flex: 1;
+    background-color: var(--background-alt-grey);
+    padding: 1.25rem;
+    border: 1px solid var(--border-default-grey);
+    border-left: 4px solid var(--border-action-high-blue-france);
+    font-size: 0.95rem;
+}
+
+.user-message .message-body {
+    border-left-color: var(--border-default-grey);
+}
+
+.message-body p {
+    margin-bottom: 0.8rem;
+}
+
+.message-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Rendu du code dans les messages */
+.message-body pre {
+    background-color: var(--background-contrast-grey);
+    border: 1px solid var(--border-default-grey);
+    border-left: 4px solid var(--border-action-high-blue-france);
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.message-body code {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-title-grey);
+}
+
+.message-body p > code {
+    background-color: var(--background-contrast-grey);
+    padding: 2px 6px;
+    border: 1px solid var(--border-default-grey);
+}
+
+/* Liste des suggestions */
+.suggestion-intro {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 1rem;
+}
+
+.suggestions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.suggestions-grid .suggestion-chip {
+    margin: 0 !important;
+}
+
+/* Formulaire de saisie du message */
+.chat-input-form {
+    padding: 1rem;
+    border-top: 1px solid var(--border-default-grey);
+    background-color: var(--background-alt-grey);
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    background-color: var(--background-default-grey);
+    border: 1px solid var(--border-default-grey);
+    border-bottom: 2px solid var(--text-mention-grey);
+    padding: 6px 12px;
+}
+
+.input-wrapper:focus-within {
+    border-bottom-color: var(--border-action-high-blue-france);
+}
+
+.input-wrapper textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    resize: none;
+    color: var(--text-default-grey);
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 8px 45px 8px 0;
+    min-height: 40px;
+    outline: none;
+}
+
+.btn-submit {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    background-color: var(--background-action-high-blue-france);
+    border: none;
+    color: var(--text-inverted-blue-france);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-submit:hover {
+    background-color: var(--background-action-high-blue-france-hover);
+}
+
+.btn-submit:disabled {
+    background-color: var(--background-disabled-grey);
+    color: var(--text-disabled-grey);
+    cursor: not-allowed;
+}
+
+/* Indicateur d'écriture */
+.typing-indicator {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    background-color: var(--background-default-grey);
+}
+
+.typing-indicator span {
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--background-action-high-blue-france);
+    animation: typing 1s infinite alternate;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Badges de critères cliquables */
+.critere-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--background-contrast-grey);
+    border: 1px solid var(--border-action-high-blue-france);
+    color: var(--text-default-grey);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    margin-right: 4px;
+    cursor: pointer;
+}
+
+.critere-badge:hover {
+    background-color: var(--background-action-high-blue-france);
+    color: var(--text-inverted-blue-france);
+}
+
+/* ==========================================================================
+   SOURCES ASSOCIEES EN ACCORDEON (SOUS LA REPONSE)
+   ========================================================================== */
+
+.message-sources-section {
+    border-top: 1px dashed var(--border-default-grey);
+    padding-top: 1rem;
+}
+
+.sources-accordions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+details.source-details {
+    background-color: var(--background-default-grey);
+    border: 1px solid var(--border-default-grey);
+    border-left: 4px solid var(--border-action-high-blue-france);
+}
+
+details.source-details summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+    outline: none;
+}
+
+details.source-details summary:hover {
+    background-color: var(--background-contrast-grey);
+}
+
+details.source-details[open] summary {
+    border-bottom: 1px solid var(--border-default-grey);
+}
+
+.details-content {
+    background-color: var(--background-contrast-grey);
+    padding: 1rem;
+}
+
+.details-content p {
+    color: var(--text-default-grey);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   NOTIFICATIONS / TOAST
+   ========================================================================== */
+
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background-color: var(--background-alt-grey);
+    border: 1px solid var(--border-default-grey);
+    border-left: 4px solid var(--border-action-high-blue-france);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    animation: slideInRight 0.25s ease-out forwards;
+}
+
+.toast-success { border-left-color: var(--success); }
+.toast-error { border-left-color: var(--error); }
+
+.toast i { font-size: 1.1rem; }
+.toast-success i { color: var(--success); }
+.toast-error i { color: var(--error); }
+.toast-info i { color: var(--border-action-high-blue-france); }
+
+/* ==========================================================================
+   ANIMATIONS & TRANSITIONS
+   ========================================================================== */
+
+@keyframes slideUp {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    0% { opacity: 0; transform: translateX(30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; }
+}
+
+/* Effet de pulsation lors du clic sur un badge de critère */
+@keyframes pulse-highlight {
+    0% { border-color: var(--border-action-high-blue-france); }
+    50% { border-color: var(--border-active-grey); transform: scale(1.02); }
+    100% { border-color: var(--border-default-grey); transform: scale(1); }
+}
+
+.highlight-pulse {
+    animation: pulse-highlight 2s ease-in-out;
+}
