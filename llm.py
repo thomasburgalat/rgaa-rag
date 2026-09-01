@@ -1,20 +1,23 @@
 import os
-from groq import Groq
+from openai import OpenAI
 import config
 
-def get_groq_client():
-    # Initialise le client Groq avec la clé API
-    if not config.GROQ_API_KEY:
+def get_mistral_client():
+    # Initialise le client OpenAI configuré pour l'API Mistral AI
+    if not config.MISTRAL_API_KEY:
         raise ValueError(
-            "La clé API Groq n'a pas été trouvée. "
-            "Veuillez définir 'GROQ_API_KEY' ou 'groq_key' dans votre fichier .env."
+            "La clé API Mistral n'a pas été trouvée. "
+            "Veuillez définir 'MISTRAL_API_KEY' ou 'mistral_key' dans votre fichier .env."
         )
-    return Groq(api_key=config.GROQ_API_KEY)
+    return OpenAI(
+        api_key=config.MISTRAL_API_KEY,
+        base_url="https://api.mistral.ai/v1"
+    )
 
 def generate_response(query: str, retrieved_contexts: list[dict]) -> str:
-    # Génère une réponse via Groq en injectant les critères trouvés
+    # Génère une réponse via Mistral AI en injectant les critères trouvés
     try:
-        client = get_groq_client()
+        client = get_mistral_client()
     except ValueError as e:
         return f"Erreur de configuration : {str(e)}"
 
@@ -52,18 +55,18 @@ def generate_response(query: str, retrieved_contexts: list[dict]) -> str:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content}
             ],
-            model=config.GROQ_MODEL,
+            model=config.MISTRAL_MODEL,
             temperature=0.2,
             max_tokens=1500
         )
         return chat_completion.choices[0].message.content
     except Exception as e:
-        return f"Une erreur est survenue lors de la génération de la réponse via Groq : {str(e)}"
+        return f"Une erreur est survenue lors de la génération de la réponse via Mistral AI : {str(e)}"
 
 def generate_response_stream(query: str, retrieved_contexts: list[dict]):
     # Même chose que generate_response mais en mode streaming (générateur)
     try:
-        client = get_groq_client()
+        client = get_mistral_client()
     except ValueError as e:
         yield f"Erreur de configuration : {str(e)}"
         return
@@ -101,7 +104,7 @@ def generate_response_stream(query: str, retrieved_contexts: list[dict]):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content}
             ],
-            model=config.GROQ_MODEL,
+            model=config.MISTRAL_MODEL,
             temperature=0.2,
             max_tokens=1500,
             stream=True
@@ -111,5 +114,6 @@ def generate_response_stream(query: str, retrieved_contexts: list[dict]):
             if delta:
                 yield delta
     except Exception as e:
-        yield f"\n\nUne erreur est survenue lors de la génération de la réponse via Groq : {str(e)}"
+        yield f"\n\nUne erreur est survenue lors de la génération de la réponse via Mistral AI : {str(e)}"
+
 

@@ -329,68 +329,52 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Parser markdown fait maison
+    // Parser markdown avec marked.js et badges pour le RGAA
     function parseMarkdown(md) {
-        let html = md;
+        if (!md) return '';
+        let html = '';
 
-        // On gere les blocs de code
-        const codeBlocks = [];
-        html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
-            const placeholder = `__CODE_BLOCK_PLACEHOLDER_${codeBlocks.length}__`;
-            codeBlocks.push(`<pre><code class="language-${lang}">${escapeHTML(code.trim())}</code></pre>`);
-            return placeholder;
-        });
+        if (typeof marked !== 'undefined') {
+            // Configuration de marked pour les sauts de ligne et le rendu HTML
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+            html = marked.parse(md);
+        } else {
+            // Fallback si marked.js n'est pas chargé
+            const codeBlocks = [];
+            html = md.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+                const placeholder = `__CODE_BLOCK_PLACEHOLDER_${codeBlocks.length}__`;
+                codeBlocks.push(`<pre><code class="language-${lang}">${escapeHTML(code.trim())}</code></pre>`);
+                return placeholder;
+            });
 
-        // Code inline
-        const inlineCodes = [];
-        html = html.replace(/`([^`]+)`/g, (match, code) => {
-            const placeholder = `__INLINE_CODE_PLACEHOLDER_${inlineCodes.length}__`;
-            inlineCodes.push(`<code>${escapeHTML(code)}</code>`);
-            return placeholder;
-        });
+            html = escapeHTML(html);
 
-        // Securite basic pour echapper le html
-        html = escapeHTML(html);
+            codeBlocks.forEach((block, idx) => {
+                html = html.replace(`__CODE_BLOCK_PLACEHOLDER_${idx}__`, block);
+            });
 
-        // On remet les blocs de code et inline
-        codeBlocks.forEach((block, idx) => {
-            html = html.replace(`__CODE_BLOCK_PLACEHOLDER_${idx}__`, block);
-        });
-        inlineCodes.forEach((code, idx) => {
-            html = html.replace(`__INLINE_CODE_PLACEHOLDER_${idx}__`, code);
-        });
+            html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+            html = html.replace(/^&gt;\s?(.*?)$/gm, '<blockquote>$1</blockquote>');
+            html = html.replace(/^---$/gm, '<hr>');
+            html = html.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*([\s\S]*?)\*/g, '<em>$1</em>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            html = html.replace(/\n/g, '<br>');
+        }
 
         // Detection des references aux criteres pour en faire des badges cliquables
         html = html.replace(/(Critère|critère)\s+(\d+\.\d+)/g, (match, word, num) => {
             return `<span class="critere-badge" data-target="critere-${num}" role="button" tabindex="0" title="Afficher la source du critère ${num}">${word} ${num}</span>`;
         });
 
-        // Gras
-        html = html.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
-
-        // Italique
-        html = html.replace(/\*([\s\S]*?)\*/g, '<em>$1</em>');
-
-        // Titres
-        html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-        html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
-        html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
-
-        // Remplacement des sauts de ligne
-        const parts = html.split(/(<\/pre>|<pre>)/);
-        let inPre = false;
-        for (let i = 0; i < parts.length; i++) {
-            if (parts[i] === '<pre>') inPre = true;
-            else if (parts[i] === '</pre>') inPre = false;
-            else if (!inPre) {
-                // Remplacer les nouvelles lignes par des sauts de ligne sémantiques ou paragraphes
-                parts[i] = parts[i].replace(/\n/g, '<br>');
-            }
-        }
-        html = parts.join('');
-
         return html;
     }
+
 
     function escapeHTML(str) {
         return str
