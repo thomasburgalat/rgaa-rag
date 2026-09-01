@@ -52,49 +52,49 @@ Ensuring digital accessibility under European and French regulations requires de
 ### 📐 Architecture & End-to-End Flow
 
 ```mermaid
-flowchart TD
-    subgraph Data_Ingestion ["1. Data Ingestion Pipeline (ingest_rgaa.py)"]
-        A[JSON RGAA 4.1 Data<br/>data/criteres.json] --> B[Text Chunking & Document Structuring]
-        B --> C[Mistral Embed API<br/>mistral-embed]
-        C --> D[(ChromaDB Vector Store<br/>chroma_db/)]
+graph TD
+    subgraph DataIngestionEN["Data Ingestion Pipeline"]
+        A1["JSON RGAA 4.1 Dataset"] --> B1["Text Chunking and Structuring"]
+        B1 --> C1["Mistral Embed API"]
+        C1 --> D1["ChromaDB Vector Store"]
     end
 
-    subgraph User_Query_Flow ["2. RAG Query & Response Pipeline (api.py / rag.py)"]
-        E[User Query<br/>Web Interface] -->|POST /api/query_stream| F[FastAPI Backend]
-        F --> G[Query Vectorization<br/>database.py]
-        G -->|Embedding Vector| H[(ChromaDB Query<br/>Top-K Similarity Search)]
-        H -->|Retrieved RGAA Documents| I[Context Assembler & System Prompt]
-        I --> J[Mistral AI LLM API<br/>mistral-small-latest]
-        J -->|Chunked Token Stream| K[NDJSON Streaming Response]
-        K -->|Real-time Rendering| L[Vanilla JS + Marked.js<br/>Interactive UI & Badges]
+    subgraph UserQueryFlowEN["RAG Query and Response Pipeline"]
+        E1["User Query"] --> F1["FastAPI Backend"]
+        F1 --> G1["Query Vectorization"]
+        G1 --> H1["ChromaDB Similarity Search"]
+        H1 --> I1["Context Assembler and System Prompt"]
+        I1 --> J1["Mistral AI LLM API"]
+        J1 --> K1["NDJSON Streaming Response"]
+        K1 --> L1["Interactive Web UI"]
     end
 ```
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    participant Frontend as Web Client (DSFR / app.js)
-    participant API as FastAPI (api.py)
-    participant RAG as RAG Controller (rag.py)
-    participant DB as Vector DB (database.py / ChromaDB)
-    participant Mistral as Mistral AI API
+    actor UserEN as "User"
+    participant FrontendEN as "Web Client (app.js)"
+    participant APIEN as "FastAPI Backend (api.py)"
+    participant RAGEN as "RAG Controller (rag.py)"
+    participant DBEN as "Vector DB (ChromaDB)"
+    participant MistralEN as "Mistral AI API"
 
-    User->>Frontend: Type question ("How to make decorative images accessible?")
-    Frontend->>API: POST /api/query_stream {question, n_results: 4}
-    API->>RAG: answer_query_stream(query)
-    RAG->>DB: query_database(query, n_results=4)
-    DB->>Mistral: Generate Query Embedding (mistral-embed)
-    Mistral-->>DB: Vector Float Array
-    DB-->>RAG: Top-4 Context Chunks (Criteria, Tests, Glossary)
-    RAG-->>Frontend: Stream JSON Source Metadata [{"type": "sources", ...}]
-    RAG->>Mistral: Call Chat Completion Stream (mistral-small-latest + Prompt + Context)
+    UserEN->>FrontendEN: Submit question
+    FrontendEN->>APIEN: POST /api/query_stream
+    APIEN->>RAGEN: answer_query_stream()
+    RAGEN->>DBEN: query_database()
+    DBEN->>MistralEN: Generate Embedding
+    MistralEN-->>DBEN: Vector Embeddings
+    DBEN-->>RAGEN: Top-4 Context Chunks
+    RAGEN-->>FrontendEN: Stream Sources JSON
+    RAGEN->>MistralEN: Stream Chat Completion
     loop Token Streaming
-        Mistral-->>RAG: Token Delta Chunk
-        RAG-->>Frontend: Stream JSON Chunk [{"type": "chunk", "data": "..."}]
-        Frontend->>Frontend: Parse Markdown via marked.js & Inject Badges
+        MistralEN-->>RAGEN: Token Delta
+        RAGEN-->>FrontendEN: Stream NDJSON Chunk
+        FrontendEN->>FrontendEN: Render Markdown and Badges
     end
-    RAG-->>Frontend: Stream Signal [{"type": "done"}]
+    RAGEN-->>FrontendEN: Stream Signal Done
 ```
 
 ---
@@ -195,22 +195,49 @@ Garantir la conformité d'un site web au **RGAA 4.1** exige de maîtriser 13 th�
 ### 📐 Architecture & Flux de Données
 
 ```mermaid
-flowchart TD
-    subgraph Ingestion_Donnees ["1. Ingestion des Données (ingest_rgaa.py)"]
-        A[Données JSON RGAA 4.1<br/>data/criteres.json] --> B[Découpage & Structuration]
-        B --> C[API Mistral Embed<br/>mistral-embed]
-        C --> D[(Base Vectorielle ChromaDB<br/>chroma_db/)]
+graph TD
+    subgraph IngestionDonneesFR["Ingestion des Donnees"]
+        A2["Donnees JSON RGAA 4.1"] --> B2["Decoupage et Structuration"]
+        B2 --> C2["API Mistral Embed"]
+        C2 --> D2["Base Vectorielle ChromaDB"]
     end
 
-    subgraph Flux_Requete_Utilisateur ["2. Traitement de la Question & RAG (api.py / rag.py)"]
-        E[Question Utilisateur<br/>Interface Web] -->|POST /api/query_stream| F[Backend FastAPI]
-        F --> G[Vectorisation de la Question<br/>database.py]
-        G -->|Vecteur d'Embedding| H[(Recherche ChromaDB<br/>Similarité Cosinus)]
-        H -->|Documents RGAA Pertinents| I[Assemblage du Contexte & Prompt Système]
-        I --> J[API LLM Mistral AI<br/>mistral-small-latest]
-        J -->|Flux de Tokens| K[Réponse Streaming NDJSON]
-        K -->|Rendu en temps réel| L[JS Vanilla + Marked.js<br/>Interface & Badges Interactifs]
+    subgraph FluxRequeteFR["Traitement de la Question RAG"]
+        E2["Question Utilisateur"] --> F2["Backend FastAPI"]
+        F2 --> G2["Vectorisation de la Question"]
+        G2 --> H2["Recherche ChromaDB"]
+        H2 --> I2["Assemblage Contexte et Prompt Systeme"]
+        I2 --> J2["API LLM Mistral AI"]
+        J2 --> K2["Reponse Streaming NDJSON"]
+        K2 --> L2["Interface Web et Badges Interactifs"]
     end
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor UtilisateurFR as "Utilisateur"
+    participant FrontendFR as "Client Web (app.js)"
+    participant APIFR as "Serveur FastAPI (api.py)"
+    participant RAGFR as "Controleur RAG (rag.py)"
+    participant DBFR as "Base Vectorielle (ChromaDB)"
+    participant MistralFR as "API Mistral AI"
+
+    UtilisateurFR->>FrontendFR: Pose une question sur le RGAA
+    FrontendFR->>APIFR: POST /api/query_stream
+    APIFR->>RAGFR: answer_query_stream()
+    RAGFR->>DBFR: query_database()
+    DBFR->>MistralFR: Genere Embedding
+    MistralFR-->>DBFR: Vecteurs Embedding
+    DBFR-->>RAGFR: Documents RGAA Pertinents
+    RAGFR-->>FrontendFR: Envoie Metadonnees Sources
+    RAGFR->>MistralFR: Generation Streaming LLM
+    loop Flux de Tokens
+        MistralFR-->>RAGFR: Chunk NDJSON
+        RAGFR-->>FrontendFR: Envoie le Chunk
+        FrontendFR->>FrontendFR: Rendu Markdown et Badges
+    end
+    RAGFR-->>FrontendFR: Signal de fin
 ```
 
 ---
