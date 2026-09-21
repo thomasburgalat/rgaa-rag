@@ -1,244 +1,205 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGAA Assistant AI — Copilote d'Accessibilité Numérique</title>
+    <title>RGAA DevCompanion — Assistant Accessibilité</title>
     <meta name="description"
-        content="RGAA Assistant AI : un copilote d'accessibilité intelligent (RAG) basé sur le RGAA 4.1, Mistral AI et Groq pour aider les développeurs à concevoir des sites conformes.">
-    <meta name="keywords" content="rgaa assistant, rgaa ai, rgaa copilot, rgaa chatbot, accessibilité numérique, rgaa 4.1, RAG, mistral ai, groq, developpeur rgaa, wcag">
-    
-    <!-- Open Graph / Facebook -->
+        content="RGAA DevCompanion : assistant intelligent RAG basé sur le RGAA 4.1, pour concevoir des sites web accessibles et conformes.">
+    <meta name="keywords" content="rgaa assistant, accessibilité numérique, rgaa 4.1, RAG, wcag, développeur web">
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://rgaa-rag.onrender.com/">
-    <meta property="og:title" content="RGAA Assistant AI — Copilote d'Accessibilité Numérique">
-    <meta property="og:description" content="Assistant intelligent (RAG) basé sur le RGAA 4.1 pour aider les développeurs à concevoir des sites accessibles et conformes.">
+    <meta property="og:title" content="RGAA DevCompanion — Assistant Accessibilité">
+    <meta property="og:description" content="Assistant RAG RGAA 4.1 pour les développeurs web exigeants.">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://rgaa-rag.onrender.com/">
-    <meta property="twitter:title" content="RGAA Assistant AI — Copilote d'Accessibilité Numérique">
-    <meta property="twitter:description" content="Assistant intelligent (RAG) basé sur le RGAA 4.1 pour aider les développeurs à concevoir des sites accessibles et conformes.">
+    <!-- Inter from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Données structurées JSON-LD -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "RGAA Assistant AI",
-      "url": "https://rgaa-rag.onrender.com/",
-      "description": "Assistant intelligent RAG basé sur l'IA et le référentiel RGAA 4.1 pour aider les développeurs web dans leur mise en conformité d'accessibilité numérique.",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "All",
-      "browserRequirements": "Requires HTML5/JavaScript",
-      "offers": {
-        "@type": "Offer",
-        "price": "0.00",
-        "priceCurrency": "EUR"
-      }
-    }
-    </script>
+    <!-- FontAwesome (minimal icon use) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- CSS Officiel du Système de Design de l'État (DSFR) -->
-    <link rel="stylesheet" href="https://unpkg.com/@gouvfr/dsfr@1.12.0/dist/dsfr.min.css">
-    <!-- Icônes officielles du DSFR -->
-    <link rel="stylesheet" href="https://unpkg.com/@gouvfr/dsfr@1.12.0/dist/utility/icons/icons.min.css">
-
-    <!-- FontAwesome for additional specific icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Marked.js pour le rendu du Markdown -->
+    <!-- Marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Styles spécifiques pour adapter le chat RAG au DSFR -->
+
+    <!-- Our styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
-    <!-- En-tête / Header officiel DSFR -->
-    <header role="banner" class="fr-header" id="header-navigation">
-        <div class="fr-header__body">
-            <div class="fr-container">
-                <div class="fr-header__body-row">
-                    <div class="fr-header__brand fr-enlarge-link">
-                        <div class="fr-header__brand-top">
-                            <div class="fr-logo" style="background: none; padding: 0.5rem 1rem 0.5rem 0;">
-                                <p class="fr-logo__title" style="text-transform: uppercase; border-bottom: 2px solid var(--border-action-high-blue-france); font-size: 1.1rem; line-height: 1.1; margin-bottom: 0;">
-                                    Projet
-                                    <br>Étudiant
-                                </p>
-                            </div>
-                        </div>
-                        <div class="fr-header__service">
-                            <a href="/" title="Accueil - RGAA DevCompanion">
-                                <p class="fr-header__service-title">RGAA DevCompanion</p>
-                            </a>
-                            <p class="fr-header__service-tagline">Assistant intelligent d'accessibilité numérique</p>
+    <!-- Sidebar Layout -->
+    <div class="app-layout">
+
+        <!-- Left Sidebar -->
+        <aside class="sidebar" role="navigation" aria-label="Navigation principale">
+            <div class="sidebar__top">
+                <div class="sidebar__brand">
+                    <div class="brand-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="8" height="8" rx="2" fill="currentColor" opacity="0.8"/>
+                            <rect x="10" width="8" height="8" rx="2" fill="currentColor" opacity="0.5"/>
+                            <rect y="10" width="8" height="8" rx="2" fill="currentColor" opacity="0.5"/>
+                            <rect x="10" y="10" width="8" height="8" rx="2" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <span class="brand-name">RGAA DevCompanion</span>
+                </div>
+
+                <nav class="sidebar__nav">
+                    <a href="#" class="nav-item nav-item--active" aria-current="page">
+                        <i class="fa-solid fa-comments nav-icon" aria-hidden="true"></i>
+                        <span>Assistant</span>
+                    </a>
+                    <a href="https://accessibilite.numerique.gouv.fr" target="_blank" rel="noopener" class="nav-item">
+                        <i class="fa-solid fa-book-open nav-icon" aria-hidden="true"></i>
+                        <span>Référentiel RGAA 4.1</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square nav-external" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.numerique.gouv.fr" target="_blank" rel="noopener" class="nav-item">
+                        <i class="fa-solid fa-landmark nav-icon" aria-hidden="true"></i>
+                        <span>DINUM</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square nav-external" aria-hidden="true"></i>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar__bottom">
+                <!-- Accessibility Controls -->
+                <div class="sidebar__section-title">Accessibilité</div>
+
+                <div class="sidebar__controls">
+                    <div class="control-row">
+                        <span class="control-label">Taille du texte</span>
+                        <div class="control-group" role="group" aria-label="Taille du texte">
+                            <button id="font-decrease" class="ctrl-btn" title="Réduire la taille du texte" aria-label="Réduire la taille du texte">A−</button>
+                            <button id="font-increase" class="ctrl-btn" title="Agrandir la taille du texte" aria-label="Agrandir la taille du texte">A+</button>
                         </div>
                     </div>
 
-                    <div class="fr-header__tools">
-                        <div class="fr-header__tools-links">
-                            <ul class="fr-btns-group">
-                                <li>
-                                    <button id="btn-reingest" class="fr-btn fr-btn--secondary fr-icon-refresh-line"
-                                        title="Re-ingérer les données RGAA" aria-label="Re-ingérer les données RGAA">
-                                        Re-ingérer
-                                    </button>
-                                </li>
-                                <li>
-                                    <button id="theme-toggle" class="fr-btn fr-btn--tertiary fr-icon-theme-fill"
-                                        title="Changer le thème" aria-label="Changer le thème"></button>
-                                </li>
-                                <li>
-                                    <button id="font-increase" class="fr-btn fr-btn--tertiary"
-                                        title="Agrandir la taille du texte"
-                                        aria-label="Agrandir la taille du texte">A+</button>
-                                </li>
-                                <li>
-                                    <button id="font-decrease" class="fr-btn fr-btn--tertiary"
-                                        title="Réduire la taille du texte"
-                                        aria-label="Réduire la taille du texte">A-</button>
-                                </li>
-                                <li>
-                                    <button id="dyslexic-toggle" class="fr-btn fr-btn--secondary"
-                                        title="Activer la police adaptée aux dyslexiques"
-                                        aria-label="Police dyslexique">
-                                        Police Dys
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <button id="dyslexic-toggle" class="ctrl-btn ctrl-btn--full" title="Basculer vers la police adaptée dyslexie" aria-label="Police dyslexique">
+                        <i class="fa-solid fa-font" aria-hidden="true"></i>
+                        Police dyslexique
+                    </button>
+
+                    <button id="theme-toggle" class="ctrl-btn ctrl-btn--full" title="Changer le thème" aria-label="Changer le thème">
+                        <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+                        <span id="theme-label">Mode sombre</span>
+                    </button>
+
+                    <button id="btn-reingest" class="ctrl-btn ctrl-btn--full" title="Ré-indexer la base vectorielle RGAA 4.1" aria-label="Ré-ingérer les données RGAA">
+                        <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+                        Ré-indexer les données
+                    </button>
+                </div>
+
+                <div class="sidebar__meta">
+                    <span class="meta-badge">
+                        <span class="meta-dot"></span>
+                        RGAA 4.1 indexé
+                    </span>
+                    <span class="meta-version">Projet étudiant</span>
                 </div>
             </div>
-        </div>
-    </header>
+        </aside>
 
-    <!-- Zone principale : Chatbot centré et large conforme DSFR -->
-    <main class="fr-container fr-py-6v" role="main">
-        <div class="fr-grid-row fr-grid-row--center">
+        <!-- Main Content -->
+        <main class="main-content" role="main">
 
-            <!-- Chatbot central (9 colonnes sur grand écran, centré) -->
-            <section class="fr-col-12 fr-col-md-10 fr-col-lg-12" aria-labelledby="chat-heading">
-                <h2 id="chat-heading" class="sr-only">Assistant de conformité RGAA</h2>
+            <!-- Top Bar / Page Header -->
+            <header class="page-header" role="banner">
+                <div class="page-header__left">
+                    <h1 class="page-title">Assistant RGAA</h1>
+                    <span class="page-subtitle">Référentiel Général d'Amélioration de l'Accessibilité · v4.1</span>
+                </div>
+                <div class="page-header__right">
+                    <span class="model-pill">
+                        <span class="model-dot"></span>
+                        RAG · Mistral AI
+                    </span>
+                </div>
+            </header>
 
-                <div class="chat-container">
-                    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
-                        <!-- Message de bienvenue -->
-                        <div class="message system-message">
-                            <div class="message-avatar" aria-hidden="true">
-                                <i class="fa-solid fa-robot"></i>
-                            </div>
-                            <div class="message-body">
-                                <p>Bonjour ! Je suis votre compagnon RGAA. Posez-moi des questions sur la conformité de
-                                    vos composants web ou le référentiel RGAA 4.1.</p>
-                                <p class="suggestion-intro">Quelques exemples de questions :</p>
-                                <div class="suggestions-grid">
-                                    <button class="fr-btn fr-btn--secondary fr-btn--sm suggestion-chip">Comment rendre
-                                        une image décorative accessible ?</button>
-                                    <button class="fr-btn fr-btn--secondary fr-btn--sm suggestion-chip">Quels sont les
-                                        contrastes requis pour le texte ?</button>
-                                    <button class="fr-btn fr-btn--secondary fr-btn--sm suggestion-chip">Comment baliser
-                                        un tableau complexe en HTML ?</button>
-                                    <button class="fr-btn fr-btn--secondary fr-btn--sm suggestion-chip">Quelles balises
-                                        utiliser pour le titre principal d'une page ?</button>
+            <!-- Chat Area -->
+            <section class="chat-section" aria-labelledby="chat-heading">
+                <h2 id="chat-heading" class="sr-only">Conversation avec l'assistant RGAA</h2>
+
+                <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+
+                    <!-- Welcome block -->
+                    <div class="message system-message">
+                        <div class="message-avatar" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                                <rect x="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6"/>
+                                <rect y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6"/>
+                                <rect x="9" y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.35"/>
+                            </svg>
+                        </div>
+                        <div class="message-body">
+                            <p class="message-sender">RGAA DevCompanion</p>
+                            <div class="message-content">
+                                <p>Bonjour ! Posez-moi vos questions sur la conformité RGAA 4.1 — je recherche dans le référentiel officiel et génère des réponses contextualisées.</p>
+
+                                <div class="suggestion-group">
+                                    <p class="suggestion-label">Essayez l'un de ces exemples</p>
+                                    <div class="suggestions">
+                                        <button class="suggestion-chip">Comment rendre une image décorative accessible ?</button>
+                                        <button class="suggestion-chip">Quels sont les contrastes requis pour le texte ?</button>
+                                        <button class="suggestion-chip">Comment baliser un tableau complexe en HTML ?</button>
+                                        <button class="suggestion-chip">Hiérarchie des titres : bonnes pratiques RGAA ?</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Indicateur de chargement -->
-                    <div class="typing-indicator" id="typing-indicator" aria-hidden="true" style="display: none;">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                </div>
 
-                    <!-- Formulaire de saisie -->
-                    <form class="chat-input-form" id="chat-form" action="#">
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typing-indicator" aria-hidden="true" style="display: none;">
+                    <div class="message-avatar typing-avatar" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                            <rect x="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.6"/>
+                            <rect x="9" y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.35"/>
+                        </svg>
+                    </div>
+                    <div class="typing-bubbles">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+
+                <!-- Input Bar -->
+                <div class="input-bar" role="form">
+                    <form class="input-form" id="chat-form" action="#">
+                        <label for="user-query" class="sr-only">Votre question sur le RGAA 4.1</label>
                         <div class="input-wrapper">
-                            <label for="user-query" class="sr-only">Votre question sur le RGAA</label>
-                            <textarea id="user-query" class="fr-input"
-                                placeholder="Posez votre question d'accessibilité ici... (ex: structure d'un bouton accessible)"
-                                required rows="2"></textarea>
-                            <button type="submit" class="fr-btn btn-submit" id="btn-submit"
-                                aria-label="Envoyer la question">
-                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                            <textarea
+                                id="user-query"
+                                class="input-textarea"
+                                placeholder="Posez une question sur le RGAA 4.1…"
+                                required
+                                rows="1"
+                            ></textarea>
+                            <button type="submit" class="send-btn" id="btn-submit" aria-label="Envoyer">
+                                <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
                             </button>
                         </div>
+                        <p class="input-hint">Entrée pour envoyer · Maj+Entrée pour un saut de ligne</p>
                     </form>
                 </div>
             </section>
-        </div>
-    </main>
+        </main>
+    </div>
 
-    <!-- Zone de notification accessible (Aria-live) -->
+    <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
-
-    <!-- Pied de page officiel DSFR -->
-    <footer class="fr-footer" role="contentinfo" id="footer">
-        <div class="fr-container">
-            <div class="fr-footer__body">
-                <div class="fr-footer__brand fr-enlarge-link">
-                    <div class="fr-logo" style="background: none; padding: 0.5rem 1rem 0.5rem 0;">
-                        <p class="fr-logo__title" style="text-transform: uppercase; border-bottom: 2px solid var(--border-action-high-blue-france); font-size: 1.1rem; line-height: 1.1; margin-bottom: 0;">
-                            Projet
-                            <br>Étudiant
-                        </p>
-                    </div>
-                    <a class="fr-footer__brand-link" href="/" title="RGAA DevCompanion">
-                        <p class="fr-footer__brand-title">RGAA DevCompanion</p>
-                    </a>
-                </div>
-                <div class="fr-footer__content">
-                    <p class="fr-footer__content-desc">Ce RAG utilise le référentiel officiel RGAA 4.1 de la Direction
-                        interministérielle du numérique (DINUM).</p>
-                    <ul class="fr-footer__content-list">
-                        <li>
-                            <a class="fr-footer__content-link" target="_blank" rel="noopener"
-                                href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
-                        </li>
-                        <li>
-                            <a class="fr-footer__content-link" target="_blank" rel="noopener"
-                                href="https://gouvernement.fr">gouvernement.fr</a>
-                        </li>
-                        <li>
-                            <a class="fr-footer__content-link" target="_blank" rel="noopener"
-                                href="https://service-public.fr">service-public.fr</a>
-                        </li>
-                        <li>
-                            <a class="fr-footer__content-link" target="_blank" rel="noopener"
-                                href="https://data.gouv.fr">data.gouv.fr</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="fr-footer__bottom">
-                <ul class="fr-footer__bottom-list">
-                    <li>
-                        <a class="fr-footer__bottom-link" href="https://accessibilite.numerique.gouv.fr" target="_blank"
-                            rel="noopener">Référentiel RGAA</a>
-                    </li>
-                    <li>
-                        <a class="fr-footer__bottom-link" href="https://www.numerique.gouv.fr" target="_blank"
-                            rel="noopener">DINUM</a>
-                    </li>
-                    <li>
-                        <span class="fr-footer__bottom-link">Accessibilité : conforme (RAG de test)</span>
-                    </li>
-                </ul>
-                <div class="fr-footer__bottom-copy">
-                    <p>Sauf mention contraire, tous les contenus de ce site sont sous <a
-                            href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank"
-                            rel="noopener">licence etalab-2.0</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script src="app.js"></script>
 </body>
-
 </html>

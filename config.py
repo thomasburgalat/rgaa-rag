@@ -10,11 +10,12 @@ CHROMA_DIR = BASE_DIR / "chroma_db"
 
 COLLECTION_NAME = "rgaa"
 
-# Clé API pour Mistral
+# Clés API pour Groq et Mistral
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY") or os.environ.get("groq_key")
 MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY") or os.environ.get("mistral_key")
 
-# Modèle LLM choisi sur Mistral AI
-MISTRAL_MODEL = os.environ.get("MISTRAL_MODEL", "mistral-small-latest")
+# Modèle LLM choisi sur Groq
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
 
 # Setup des dossiers de stockage
 DATA_DIR.mkdir(exist_ok=True)

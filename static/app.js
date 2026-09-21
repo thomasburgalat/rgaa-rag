@@ -1,75 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Dom elements
-    const htmlEl = document.documentElement;
-    const bodyEl = document.body;
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const fontIncrease = document.getElementById('font-increase');
-    const fontDecrease = document.getElementById('font-decrease');
-    const dyslexicToggle = document.getElementById('dyslexic-toggle');
-
-    const chatForm = document.getElementById('chat-form');
-    const userQuery = document.getElementById('user-query');
-    const chatMessages = document.getElementById('chat-messages');
+    // DOM refs
+    const htmlEl          = document.documentElement;
+    const bodyEl          = document.body;
+    const themeToggle     = document.getElementById('theme-toggle');
+    const themeIcon       = document.getElementById('theme-icon');
+    const themeLabel      = document.getElementById('theme-label');
+    const fontIncrease    = document.getElementById('font-increase');
+    const fontDecrease    = document.getElementById('font-decrease');
+    const dyslexicToggle  = document.getElementById('dyslexic-toggle');
+    const chatForm        = document.getElementById('chat-form');
+    const userQuery       = document.getElementById('user-query');
+    const chatMessages    = document.getElementById('chat-messages');
     const typingIndicator = document.getElementById('typing-indicator');
-    const btnSubmit = document.getElementById('btn-submit');
-    const btnReingest = document.getElementById('btn-reingest');
-    const sourcesContainer = document.getElementById('sources-container');
-    const toastContainer = document.getElementById('toast-container');
+    const btnSubmit       = document.getElementById('btn-submit');
+    const btnReingest     = document.getElementById('btn-reingest');
+    const toastContainer  = document.getElementById('toast-container');
 
-    let currentFontSize = 16; // taille de police par defaut (px)
+    let currentFontSize = 16;
 
-    // --- ACCESSIBILITE & OPTIONS ---
-
-    // Gestion du theme (sombre par defaut)
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    htmlEl.setAttribute('data-theme', savedTheme);
-    htmlEl.setAttribute('data-fr-theme', savedTheme);
-    updateThemeIcon(savedTheme);
+    // -------------------------------------------------------------------------
+    // THEME
+    // -------------------------------------------------------------------------
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
 
     themeToggle.addEventListener('click', () => {
-        const currentTheme = htmlEl.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        htmlEl.setAttribute('data-theme', newTheme);
-        htmlEl.setAttribute('data-fr-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        showToast(`Thème ${newTheme === 'dark' ? 'sombre' : 'clair'} activé`, 'info');
+        const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', next);
+        applyTheme(next);
+        showToast(`Thème ${next === 'dark' ? 'sombre' : 'clair'} activé`, 'info');
     });
 
-    function updateThemeIcon(theme) {
-        if (themeIcon) {
-            if (theme === 'dark') {
-                themeIcon.className = 'fa-solid fa-sun';
-            } else {
-                themeIcon.className = 'fa-solid fa-moon';
-            }
-        }
-
-        // Ajustement des classes DSFR pour l'icone du bouton theme
+    function applyTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        if (themeIcon)  themeIcon.className  = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
         if (themeToggle) {
-            if (theme === 'dark') {
-                themeToggle.title = "Passer au thème clair";
-                themeToggle.setAttribute('aria-label', "Passer au thème clair");
-                themeToggle.classList.remove('fr-icon-theme-fill');
-                themeToggle.classList.remove('fr-icon-sun-fill');
-                themeToggle.classList.add('fr-icon-moon-fill');
-            } else {
-                themeToggle.title = "Passer au thème sombre";
-                themeToggle.setAttribute('aria-label', "Passer au thème sombre");
-                themeToggle.classList.remove('fr-icon-theme-fill');
-                themeToggle.classList.remove('fr-icon-moon-fill');
-                themeToggle.classList.add('fr-icon-sun-fill');
-            }
+            themeToggle.title        = theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre';
+            themeToggle.setAttribute('aria-label', themeToggle.title);
         }
     }
 
-    // Boutons de changement de taille de police
+    // -------------------------------------------------------------------------
+    // FONT SIZE
+    // -------------------------------------------------------------------------
     fontIncrease.addEventListener('click', () => {
         if (currentFontSize < 24) {
             currentFontSize += 2;
             htmlEl.style.setProperty('--base-font-size', `${currentFontSize}px`);
-            showToast(`Taille du texte augmentée (${currentFontSize}px)`, 'info');
+            showToast(`Taille du texte : ${currentFontSize}px`, 'info');
         }
     });
 
@@ -77,25 +56,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentFontSize > 12) {
             currentFontSize -= 2;
             htmlEl.style.setProperty('--base-font-size', `${currentFontSize}px`);
-            showToast(`Taille du texte diminuée (${currentFontSize}px)`, 'info');
+            showToast(`Taille du texte : ${currentFontSize}px`, 'info');
         }
     });
 
-    // Switch pour la police dyslexique
+    // -------------------------------------------------------------------------
+    // DYSLEXIC FONT
+    // -------------------------------------------------------------------------
     dyslexicToggle.addEventListener('click', () => {
         bodyEl.classList.toggle('dyslexic-mode');
-        const isActive = bodyEl.classList.contains('dyslexic-mode');
-        dyslexicToggle.classList.toggle('active', isActive);
-        localStorage.setItem('dyslexic-font', isActive ? 'true' : 'false');
-        showToast(isActive ? "Police dyslexique activée" : "Police dyslexique désactivée", "info");
+        const active = bodyEl.classList.contains('dyslexic-mode');
+        localStorage.setItem('dyslexic-font', active ? 'true' : 'false');
+        showToast(active ? 'Police dyslexique activée' : 'Police dyslexique désactivée', 'info');
     });
 
     if (localStorage.getItem('dyslexic-font') === 'true') {
         bodyEl.classList.add('dyslexic-mode');
-        dyslexicToggle.classList.add('active');
     }
 
-    // Submit le formulaire si on appuie sur Entree (sauf si shift est enfonce)
+    // -------------------------------------------------------------------------
+    // TEXTAREA — auto-resize
+    // -------------------------------------------------------------------------
+    userQuery.addEventListener('input', () => {
+        userQuery.style.height = 'auto';
+        userQuery.style.height = Math.min(userQuery.scrollHeight, 160) + 'px';
+    });
+
+    // Keyboard submit
     userQuery.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -103,164 +90,185 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Chips de suggestions cliquables
+    // Suggestion chips
     document.querySelectorAll('.suggestion-chip').forEach(chip => {
         chip.addEventListener('click', () => {
-            userQuery.value = chip.textContent;
+            userQuery.value = chip.textContent.trim();
+            userQuery.style.height = 'auto';
+            userQuery.style.height = Math.min(userQuery.scrollHeight, 160) + 'px';
             chatForm.dispatchEvent(new Event('submit'));
         });
     });
 
-    // --- LOGIQUE CHAT & STREAMING ---
-
+    // -------------------------------------------------------------------------
+    // CHAT SUBMIT & STREAMING
+    // -------------------------------------------------------------------------
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const question = userQuery.value.trim();
         if (!question) return;
 
-        // Affiche le message de l'utilisateur dans le chat
         appendMessage(question, 'user');
         userQuery.value = '';
-
-        // On desactive les inputs pendant la generation
+        userQuery.style.height = 'auto';
         setLoadingState(true);
 
         try {
             const response = await fetch('/api/query_stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: question, n_results: 4 })
+                body: JSON.stringify({ question, n_results: 4 })
             });
 
-            if (!response.ok) {
-                throw new Error("Impossible d'obtenir une réponse de l'assistant.");
-            }
+            if (!response.ok) throw new Error("Impossible d'obtenir une réponse.");
 
-            const reader = response.body.getReader();
+            const reader  = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
             let done = false;
-
-            let answerText = "";
+            let answerText  = '';
             let sourcesData = [];
 
-            // On cree la bulle de message systeme vide pour le streaming
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message system-message';
+            // Temporary streaming bubble
+            const streamDiv    = createMessageShell('system');
+            const streamBody   = streamDiv.querySelector('.message-content');
+            chatMessages.appendChild(streamDiv);
 
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.setAttribute('aria-hidden', 'true');
-            avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
-
-            const body = document.createElement('div');
-            body.className = 'message-body';
-
-            msgDiv.appendChild(avatar);
-            msgDiv.appendChild(body);
-            chatMessages.appendChild(msgDiv);
-
+            let buffer = '';
             while (!done) {
                 const { value, done: readerDone } = await reader.read();
                 done = readerDone;
                 if (value) {
-                    const chunkStr = decoder.decode(value, { stream: true });
-                    const lines = chunkStr.split('\n');
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+
                     for (const line of lines) {
-                        if (line.trim()) {
-                            try {
-                                const data = JSON.parse(line);
-                                if (data.type === 'sources') {
-                                    sourcesData = data.data;
-                                } else if (data.type === 'chunk') {
-                                    answerText += data.data;
-                                    body.innerHTML = parseMarkdown(answerText);
-                                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                                } else if (data.type === 'done') {
-                                    // C'est fini, on remplace le message temporaire par le message formate avec les sources
-                                    msgDiv.remove();
-                                    appendMessage(answerText, 'system', sourcesData);
-                                }
-                            } catch (err) {
-                                console.error("Erreur de parsing JSON:", err, line);
+                        if (!line.trim()) continue;
+                        try {
+                            const data = JSON.parse(line);
+                            if (data.type === 'sources') {
+                                sourcesData = data.data;
+                            } else if (data.type === 'chunk') {
+                                answerText += data.data;
+                                streamBody.innerHTML = parseMarkdown(answerText);
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            } else if (data.type === 'done') {
+                                streamDiv.remove();
+                                appendMessage(answerText, 'system', sourcesData);
                             }
+                        } catch (err) {
+                            console.warn('JSON parse error:', err, line);
                         }
                     }
                 }
             }
 
-        } catch (error) {
-            appendMessage(`Une erreur est survenue : ${error.message}`, 'system');
-            showToast(error.message, 'error');
+            if (buffer.trim()) {
+                try {
+                    const data = JSON.parse(buffer);
+                    if (data.type === 'chunk') {
+                        answerText += data.data;
+                    } else if (data.type === 'done') {
+                        streamDiv.remove();
+                        appendMessage(answerText, 'system', sourcesData);
+                    }
+                } catch (err) {}
+            }
+
+        } catch (err) {
+            appendMessage(`Une erreur est survenue : ${err.message}`, 'system');
+            showToast(err.message, 'error');
         } finally {
             setLoadingState(false);
         }
     });
 
-    // Ingestion manuelle
+    // -------------------------------------------------------------------------
+    // RE-INGEST
+    // -------------------------------------------------------------------------
     btnReingest.addEventListener('click', async () => {
         btnReingest.disabled = true;
-        showToast("Lancement de l'ingestion des critères...", "info");
+        showToast("Ré-indexation du RGAA 4.1 en cours…", 'info');
         try {
-            const response = await fetch('/api/ingest', { method: 'POST' });
-            const data = await response.json();
+            const res  = await fetch('/api/ingest', { method: 'POST' });
+            const data = await res.json();
             if (data.status === 'success') {
-                showToast("Ingestion lancée en tâche de fond. Cela prendra quelques secondes.", "success");
+                showToast('Ré-indexation lancée en tâche de fond', 'success');
             } else {
-                throw new Error(data.message || "Erreur lors du lancement.");
+                throw new Error(data.message || 'Erreur.');
             }
         } catch (err) {
-            showToast(err.message, "error");
+            showToast(err.message, 'error');
         } finally {
             setTimeout(() => { btnReingest.disabled = false; }, 3000);
         }
     });
 
-    // --- FONCTIONS UTILS (UI) ---
-
+    // -------------------------------------------------------------------------
+    // HELPERS
+    // -------------------------------------------------------------------------
     function setLoadingState(isLoading) {
-        if (isLoading) {
-            typingIndicator.style.display = 'flex';
-            btnSubmit.disabled = true;
-            userQuery.disabled = true;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        } else {
-            typingIndicator.style.display = 'none';
-            btnSubmit.disabled = false;
-            userQuery.disabled = false;
-            userQuery.focus();
-        }
+        typingIndicator.style.display = isLoading ? 'flex' : 'none';
+        btnSubmit.disabled  = isLoading;
+        userQuery.disabled  = isLoading;
+        if (!isLoading) userQuery.focus();
+        if (isLoading) chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function appendMessage(text, sender, sources = null) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${sender}-message`;
+    function createMessageShell(sender) {
+        const wrap   = document.createElement('div');
+        wrap.className = `message ${sender}-message`;
 
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
         avatar.setAttribute('aria-hidden', 'true');
-        avatar.innerHTML = sender === 'system'
-            ? '<i class="fa-solid fa-robot"></i>'
-            : '<i class="fa-solid fa-user"></i>';
-
-        const body = document.createElement('div');
-        body.className = 'message-body';
 
         if (sender === 'system') {
-            body.innerHTML = parseMarkdown(text);
+            avatar.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect width="7" height="7" rx="1.5" fill="currentColor" opacity=".9"/>
+                <rect x="9" width="7" height="7" rx="1.5" fill="currentColor" opacity=".6"/>
+                <rect y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity=".6"/>
+                <rect x="9" y="9" width="7" height="7" rx="1.5" fill="currentColor" opacity=".35"/>
+            </svg>`;
+        } else {
+            avatar.innerHTML = '<i class="fa-solid fa-user" aria-hidden="true"></i>';
+        }
 
-            // Rendu des sources sous forme d'accordeons DSFR
+        const body   = document.createElement('div');
+        body.className = 'message-body';
+
+        const sender_label = document.createElement('p');
+        sender_label.className = 'message-sender';
+        sender_label.textContent = sender === 'system' ? 'RGAA DevCompanion' : 'Vous';
+
+        const content = document.createElement('div');
+        content.className = 'message-content';
+
+        body.appendChild(sender_label);
+        body.appendChild(content);
+        wrap.appendChild(avatar);
+        wrap.appendChild(body);
+        return wrap;
+    }
+
+    function appendMessage(text, sender, sources = null) {
+        const wrap    = createMessageShell(sender);
+        const content = wrap.querySelector('.message-content');
+
+        if (sender === 'system') {
+            content.innerHTML = parseMarkdown(text);
+
             if (sources && sources.length > 0) {
-                const sourcesSection = document.createElement('div');
-                sourcesSection.className = 'message-sources-section fr-mt-3v';
+                const section = document.createElement('div');
+                section.className = 'message-sources-section';
 
-                const heading = document.createElement('p');
-                heading.className = 'fr-text--lead fr-text--bold fr-mb-1v';
-                heading.innerHTML = '<i class="fr-icon-book-mark-line fr-mr-1v" aria-hidden="true"></i>Critères et tests RGAA associés :';
-                sourcesSection.appendChild(heading);
+                const heading = document.createElement('div');
+                heading.className = 'sources-heading';
+                heading.innerHTML = '<i class="fa-solid fa-bookmark" aria-hidden="true"></i> Sources RGAA associées';
+                section.appendChild(heading);
 
-                const accordionsGroup = document.createElement('div');
-                accordionsGroup.className = 'sources-accordions';
+                const accordions = document.createElement('div');
+                accordions.className = 'sources-accordions';
 
                 sources.forEach((src) => {
                     const details = document.createElement('details');
@@ -268,143 +276,112 @@ document.addEventListener('DOMContentLoaded', () => {
                     details.id = `details-${src.id}`;
 
                     const meta = src.metadata;
-                    let displayTitle = '';
-                    let badgeText = meta.type === 'critere' ? 'Critère' : 'Glossaire';
-                    let subtitle = '';
+                    let title    = '';
+                    let badgeText = meta.type === 'critere' ? `Critère ${meta.critere}` : 'Glossaire';
+                    let wcag     = '';
 
                     if (meta.type === 'critere') {
-                        displayTitle = `Critère ${meta.critere} — ${meta.theme}`;
-                        subtitle = `WCAG: ${meta.wcag || 'N/A'}`;
+                        title = meta.theme || '';
+                        wcag  = meta.wcag ? `WCAG ${meta.wcag}` : '';
                     } else if (meta.type === 'glossaire') {
-                        displayTitle = `Glossaire — ${meta.terme}`;
-                        subtitle = `Définition`;
+                        title = meta.terme || '';
                     }
 
                     const summary = document.createElement('summary');
                     summary.innerHTML = `
-                        <span class="fr-badge fr-badge--info fr-mr-1v">${badgeText}</span>
-                        <strong>${displayTitle}</strong>
-                        <span class="fr-text--xs fr-ml-1v" style="color: var(--text-mention-grey);">${subtitle}</span>
+                        <span class="source-badge">${badgeText}</span>
+                        <span>${escapeHTML(title)}</span>
+                        ${wcag ? `<span class="source-wcag">${escapeHTML(wcag)}</span>` : ''}
                     `;
 
                     const contentDiv = document.createElement('div');
-                    contentDiv.className = 'details-content fr-p-2v';
-                    contentDiv.innerHTML = `
-                        <p class="fr-text--sm fr-mb-0" style="white-space: pre-wrap;">${escapeHTML(src.text_snippet)}</p>
-                    `;
+                    contentDiv.className = 'details-content';
+                    contentDiv.textContent = src.text_snippet;
 
                     details.appendChild(summary);
                     details.appendChild(contentDiv);
-                    accordionsGroup.appendChild(details);
+                    accordions.appendChild(details);
                 });
 
-                sourcesSection.appendChild(accordionsGroup);
-                body.appendChild(sourcesSection);
+                section.appendChild(accordions);
+                content.appendChild(section);
             }
 
-            // Clic sur les badges de criteres pour ouvrir l'accordeon correspondant
-            body.querySelectorAll('.critere-badge').forEach(badge => {
+            // Critère badges → click → open accordion
+            content.querySelectorAll('.critere-badge').forEach(badge => {
                 badge.addEventListener('click', () => {
-                    const targetId = badge.getAttribute('data-target').replace('critere-', 'details-critere-');
-                    const detailsEl = body.querySelector(`#${targetId}`);
-                    if (detailsEl) {
-                        detailsEl.open = true;
-                        detailsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        detailsEl.classList.add('highlight-pulse');
-                        setTimeout(() => {
-                            detailsEl.classList.remove('highlight-pulse');
-                        }, 2000);
+                    const targetId = badge.getAttribute('data-target')?.replace('critere-', 'details-critere-');
+                    if (!targetId) return;
+                    const el = content.querySelector(`#${targetId}`);
+                    if (el) {
+                        el.open = true;
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.add('highlight-pulse');
+                        setTimeout(() => el.classList.remove('highlight-pulse'), 1500);
                     }
                 });
             });
         } else {
-            body.textContent = text;
+            content.textContent = text;
         }
 
-        msgDiv.appendChild(avatar);
-        msgDiv.appendChild(body);
-        chatMessages.appendChild(msgDiv);
-
-        // Scroll automatique vers le bas
+        chatMessages.appendChild(wrap);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Parser markdown avec marked.js et badges pour le RGAA
     function parseMarkdown(md) {
         if (!md) return '';
         let html = '';
 
         if (typeof marked !== 'undefined') {
-            // Configuration de marked pour les sauts de ligne et le rendu HTML
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
+            marked.setOptions({ breaks: true, gfm: true });
             html = marked.parse(md);
         } else {
-            // Fallback si marked.js n'est pas chargé
-            const codeBlocks = [];
-            html = md.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
-                const placeholder = `__CODE_BLOCK_PLACEHOLDER_${codeBlocks.length}__`;
-                codeBlocks.push(`<pre><code class="language-${lang}">${escapeHTML(code.trim())}</code></pre>`);
-                return placeholder;
+            // Minimal fallback
+            const blocks = [];
+            html = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+                const ph = `__CB_${blocks.length}__`;
+                blocks.push(`<pre><code class="language-${lang}">${escapeHTML(code.trim())}</code></pre>`);
+                return ph;
             });
-
             html = escapeHTML(html);
-
-            codeBlocks.forEach((block, idx) => {
-                html = html.replace(`__CODE_BLOCK_PLACEHOLDER_${idx}__`, block);
-            });
-
-            html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-            html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
-            html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
-            html = html.replace(/^&gt;\s?(.*?)$/gm, '<blockquote>$1</blockquote>');
-            html = html.replace(/^---$/gm, '<hr>');
-            html = html.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*([\s\S]*?)\*/g, '<em>$1</em>');
-            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-            html = html.replace(/\n/g, '<br>');
+            blocks.forEach((b, i) => { html = html.replace(`__CB_${i}__`, b); });
+            html = html
+                .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.*?)$/gm,  '<h2>$1</h2>')
+                .replace(/^# (.*?)$/gm,   '<h1>$1</h1>')
+                .replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*([\s\S]*?)\*/g,     '<em>$1</em>')
+                .replace(/`([^`]+)`/g,          '<code>$1</code>')
+                .replace(/\n/g, '<br>');
         }
 
-        // Detection des references aux criteres pour en faire des badges cliquables
-        html = html.replace(/(Critère|critère)\s+(\d+\.\d+)/g, (match, word, num) => {
-            return `<span class="critere-badge" data-target="critere-${num}" role="button" tabindex="0" title="Afficher la source du critère ${num}">${word} ${num}</span>`;
+        // RGAA criteria → interactive badges
+        html = html.replace(/(Critère|critère)\s+(\d+\.\d+)/g, (_, word, num) => {
+            return `<span class="critere-badge" data-target="critere-${num}" role="button" tabindex="0" title="Voir la source du critère ${num}">${word} ${num}</span>`;
         });
 
         return html;
     }
 
-
     function escapeHTML(str) {
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
-    // Notifications Toast
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-
-        let iconClass = 'fa-info-circle';
-        if (type === 'success') iconClass = 'fa-check-circle';
-        if (type === 'error') iconClass = 'fa-exclamation-circle';
-
-        toast.innerHTML = `
-            <i class="fa-solid ${iconClass}" aria-hidden="true"></i>
-            <span>${message}</span>
-        `;
-
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}" aria-hidden="true"></i><span>${message}</span>`;
         toastContainer.appendChild(toast);
-
-        // Effet de fadeOut apres 3s
         setTimeout(() => {
-            toast.style.animation = 'fadeOut 0.3s forwards';
-            setTimeout(() => { toast.remove(); }, 300);
+            toast.style.animation = 'fadeOut 0.25s ease forwards';
+            setTimeout(() => toast.remove(), 250);
         }, 3000);
     }
 });
